@@ -1,33 +1,19 @@
-# TASK-NAME
-
-This is the template for tasks. These repos are the starting points and instructions for students to explore a concept.
+# Cart AsyncStorage 🛒
 
 ## Instructions
-- Fork and clone [this repository](https://github.com/JoinCODED/{REPO_NAME}) to your `Development` folder.
 
-## Objective and end result
-- Write the objective of the task.
-- If there are any images, make sure you resize them to around 880px maximum width. **Don't add big images**
+- Fork and clone [this repository](https://github.com/JoinCODED/Task-RN-M5-AsyncStorage) to your `Development` folder.
 
-![screenshot](https://tenor.com/xNjE.gif)
+1. Add AsyncStorage to your project.
 
+```bash
+npm install @react-native-async-storage/async-storage
+```
 
-### 🍋 The basic challenge title
-
-- Step 1
-- Step 2
-- Step 3
-
-
-### 🤼‍♂️ The hard challenge title
-
-- Step 1
-- Step 2
-- Step 3
-
-
-### 🌶 The Extreme challenge title 
-
-- Step 1
-- Step 2
-- Step 3
+2. In your `CartStore` component, in the `addItem` method, save the `this.items` to AsyncStorage.
+3. But you can't save arrays to AsyncStorage :( Google is your friend!.
+4. Don't forget that all async storage methods are asynchronous.
+5. Create a new method in `CartStore` called `fetchItems` that will get the items from AsyncStorage.
+6. Call this method before your store export.
+7. Create another method in `CartStore` called `clearCart` that will remove items from AsyncStorage.
+8. Bind this method to your `clearCart` button in the `Cart` screen.

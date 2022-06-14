@@ -1,219 +1,74 @@
-### Setup
+# Cart AsyncStorage 🛒
 
-1. Install `react-navigation`.
+## Instructions
 
-   ```bash
-   $ npm install @react-navigation/native @react-navigation/stack
-   ```
+- Fork and clone [this repository](https://github.com/JoinCODED/Task-RN-M5-AsyncStorage) to your `Development` folder.
 
-2. Install some dependencies.
+1. Add AsyncStorage to your project.
 
-   ```bash
-   $ expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
-   ```
-
-#### Root Navigator Component
-
-1. In `components`, create a new folder called `Navigation`.
-2. Inside it create a file called `index.js`.
-3. Setup your component and call it `RootNavigator`.
-
-```js
-const RootNavigator = () => {};
+```bash
+npm install @react-native-async-storage/async-storage
 ```
 
-4. Import `createStackNavigator`.
+2. In your `CartStore` component, in the `addItem` method, save the `this.items` to AsyncStorage.
 
 ```js
-import { createStackNavigator } from '@react-navigation/stack';
-```
-
-5. Call `createStackNavigator` outside the component, save the returned value in a de-structured object to get `Navigator` and `Screen` components.
-
-```js
-const { Navigator, Screen } = createStackNavigator();
-```
-
-6. In your `RootNavigator` component, render `Navigator`.
-
-```js
-<Navigator></Navigator>
-```
-
-7. For each of your screens render a `Screen` component. Give each screen a `name` and pass it a `component`
-
-```js
-<Screen name="ProductsList" component={ProductsList} />
-<Screen name="ProductDetails" component={ProductDetail} />
-```
-
-8. Don't forget to import your components.
-9. Pass `Navigator` a `prop` called `initialRouteName` and give it the name of your `ProductList` screen's `Screen`.
-
-```js
-<Navigator initialRouteName="ProductsList" />
-```
-
-#### Setup in App
-
-1. Import `NavigationContainer`.
-
-   ```js
-   import { NavigationContainer } from '@react-navigation/native';
-   ```
-
-2. Render `NavigationContainer` inside the `App`.
-
-```js
-<NavigationContainer></NavigationContainer>
-```
-
-3. Import `RootNavigator` and render it under inside the `NavigationContainer`.
-
-```js
-import RootNavigator from './src/Navigation/index';
-```
-
-    ```js
-    <RootNavigator></RootNavigator>
-    ```
-
-4. Check that your application is running and that a header has appeared.
-
-#### Navigation
-
-1. In your `ProductsList` component, receive `navigation` as a `prop`.
-
-```js
-const ProductsList = ({ navigation }) => {};
-```
-
-2. In the `onPress` method navigate the user to the `ProductDetail` screen.
-
-```js
-<Product
-  product={product}
-  onPress={() => {
-    navigation.navigate('ProductDetails');
-  }}
-/>
-```
-
-3. Pass along with it the `id` of the product object.
-
-```js
-<Product
-  product={product}
-  onPress={() => {
-    navigation.navigate('ProductDetails', { id: product.id });
-  }}
-/>
-```
-
-4. In your `ProductDetail` component, receive `route` as a `prop`, and capture from it the `id` object you passed from `ProductList`.
-
-```js
-const ProductDetail = ({ route }) => {
-  const { id } = route.params;
+addItem = (item) => {
+  this.items.push(item);
+  // save to async storage
+  AsyncStorage.setItem('cart', this.items);
 };
 ```
 
-5. use the `id` to get the product object from the `products` array.
+3. But you can't save arrays to AsyncStorage :( Google is your friend!.
 
 ```js
-const ProductDetail = ({ route }) => {
-  const { id } = route.params;
-  const product = productStore.getProductById(route.params.id);
+addItem = (item) => {
+  this.items.push(item);
+  // save to async storage
+  AsyncStorage.setItem('cart', JSON.stringify(this.items));
 };
 ```
 
-6. Test it!
-
-#### Customization
-
-In your `RootNavigator`, customize your header.
-
-1. Customize the header for **all** your components in `Navigator`. Give them a background color and change the font if you want.
-2. Remove the header from your home screen.
-3. Change the title of your `ProductDetail` screen by fetching the product's name from `route.params`.
+4. Don't forget that all async storage methods are asynchronous.
 
 ```js
-<Navigator.Screen
-  name="ProductsList"
-  component={ProductsList}
-  options={({ route }) => {
-    const { id } = route.params;
-    return {
-      title: productStore.getProductById(id).name,
-    };
-  }}
-/>
+addItem = async (item) => {
+  this.items.push(item);
+  // save to async storage
+  await AsyncStorage.setItem('cart', JSON.stringify(this.items));
+};
 ```
 
-#### Cart 🛒
-
-    1. In your `ProductsList` component header, add a `Cart` button at the left side.
+5. Create a new method in `CartStore` called `fetchItems` that will get the items from AsyncStorage.
 
 ```js
-    options={{
-          headerRight: () => <CartIcon />,
-    }}
+fetchCart = async () => {
+  const items = await AsyncStorage.getItem('cart');
+  this.items = items ? JSON.parse(items) : [];
+};
 ```
 
-    2. Clicking on this button, navigate the user to the `Cart` screen.
+6. Call this method before your store export.
 
 ```js
-const navigation = useNavigation();
+const cartStore = new CartStore();
+
+cartStore.fetchCart();
+export default cartStore;
 ```
 
+7. Create another method in `CartStore` called `clearCart` that will remove items from AsyncStorage.
+
 ```js
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Cart');
-      }}
-    >
+clearCart = async () => {
+  this.items = [];
+  await AsyncStorage.removeItem('cart');
+};
 ```
 
-hint: [useNavigation hook](https://reactnavigation.org/docs/use-navigation/)
-
-#### DrawerNavigator 🛒
-
-Create a drawer with two screens, the root screen and the cart screen.
-
-[Docs](https://reactnavigation.org/docs/drawer-navigator/)
+8. Bind this method to your `clearCart` button in the `Cart` screen.
 
 ```js
-const Drawer = createDrawerNavigator();
-
-function DrawerNavigator() {
-  return (
-    <Drawer.Navigator initialRouteName="Home">
-      <Drawer.Screen
-        name="Home"
-        component={RootNavigator}
-        options={{
-          headerRight: () => <CartIcon />,
-        }}
-      />
-      <Drawer.Screen name="Cart" component={Cart} />
-    </Drawer.Navigator>
-  );
-}
-```
-
-```js
-import RootNavigator from './components/Navigation';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Cart } from './components/Cart';
-import 'react-native-gesture-handler';
-import CartIcon from './components/CartIcon';
-
-export default function App() {
-  return (
-    <NavigationContainer>
-      <DrawerNavigator />
-    </NavigationContainer>
-  );
-}
+<Button title="clear" onPress={() => cartStore.clearCart()} />
 ```
