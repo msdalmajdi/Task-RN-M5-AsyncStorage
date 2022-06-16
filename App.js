@@ -1,13 +1,13 @@
-import RootNavigator from './components/Navigation';
-import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import 'react-native-gesture-handler';
-import CartIcon from './components/CartIcon';
-import Cart from './components/Cart';
-import { configure } from 'mobx';
+import RootNavigator from "./components/Navigation";
+import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import "react-native-gesture-handler";
+import CartIcon from "./components/CartIcon";
+import Cart from "./components/Cart";
+import { configure } from "mobx";
 
 configure({
-  enforceActions: 'never',
+  enforceActions: "never",
 });
 
 export default function App() {

@@ -1,18 +1,14 @@
-import { createStackNavigator } from '@react-navigation/stack';
-import { ProductsList } from '../ProductsList';
-import { ProductDetail } from '../ProductDetail';
-import Cart from '../Cart';
-import productStore from '../../stores/productStore';
-import CartIcon from '../CartIcon';
+import { createStackNavigator } from "@react-navigation/stack";
+import { ProductsList } from "../ProductsList";
+import { ProductDetail } from "../ProductDetail";
+import Cart from "../Cart";
+import productStore from "../../stores/productStore";
+import CartIcon from "../CartIcon";
 
 const RootNavigator = () => {
   const { Navigator, Screen } = createStackNavigator();
   return (
-    <Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
+    <Navigator>
       <Screen name="ProductsList" component={ProductsList} />
       <Screen
         name="ProductDetails"
